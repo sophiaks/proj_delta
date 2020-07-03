@@ -21,6 +21,8 @@ import tf
 import tf2_ros
 from sensor_msgs.msg import CompressedImage, Image
 
+goal = ["person", "cat", "dog", "bird", "bird", "blue_sphere", "red_sphere", "green_sphere", "bike"]
+
 bridge = CvBridge()
 
 x = None
@@ -34,7 +36,7 @@ cv_image = "camera_link"
 
 
 tfl = 0
-tf_buffer = tf2_ros.Buffer()
+#tf_buffer = tf2_ros.Buffer()
 atraso = 1.5E9
 
 contador = 0
@@ -42,6 +44,7 @@ pula = 50
 
 check_delay = False
 
+lista = []
 
 def recebe_odometria(data):
     global x
