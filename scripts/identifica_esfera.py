@@ -13,8 +13,8 @@ from cv_bridge import CvBridge, CvBridgeError
 lower = 0
 upper = 1
 
-cor_menor = np.array([50, 50, 40], dtype=np.uint8)
-cor_maior = np.array([ 60, 255, 255], dtype=np.uint8)
+cor_menor = np.array([10, 50, 10], dtype=np.uint8)
+cor_maior = np.array([ 60, 255, 60], dtype=np.uint8)
 mask = None
 
 #TypeError: Expected Ptr<cv::UMat> for argument '%s'
@@ -22,17 +22,15 @@ def acha_esfera(frame):
     global mask
    # if frame is not None:
     print("entrou")
-    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     bordas = cv2.Canny(blur, 50, 150, apertureSize=3)
     bordas_color = cv2.cvtColor(bordas, cv2.COLOR_GRAY2BGR)
-    mask = cv2.inRange(hsv, cor_menor,cor_maior)
-    circles = cv2.HoughCircles(mask, cv2.HOUGH_GRADIENT,2,40,param1=90,param2=60,minRadius=1,maxRadius=100)
+    mask = cv2.inRange(bordas_color, cor_menor,cor_maior)
+    circles = cv2.HoughCircles(mask, cv2.HOUGH_GRADIENT,2,40,param1=200,param2=100,minRadius=1,maxRadius=100)
 
     if circles is not None:
-        print("Achou círculo(s): {}".format(circles))
+        print("Achou círculo(s): {}".format(lines))
         circles = np.uint16(np.around(circles))
 
         for i in circles[0,:]:

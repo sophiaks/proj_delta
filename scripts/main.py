@@ -154,8 +154,6 @@ def roda_todo_frame(imagem):
 
 if __name__=="__main__":
 
-
-
     rospy.init_node("odometry", anonymous=True)
     topico_imagem = "/camera/rgb/image_raw/compressed"
 
