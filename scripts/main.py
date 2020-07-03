@@ -6,27 +6,42 @@
 #
 # Esta solução pode ser vista em: https://youtu.be/GKDZPcwf2WU
 
-
 from __future__ import print_function, division
 import rospy
+import identidica_esfera
 import numpy as np
 import cv2
 from geometry_msgs.msg import Twist, Vector3
 from nav_msgs.msg import Odometry
-from sensor_msgs.msg import LaserScan
-from geometry_msgs.msg import Twist, Vector3
 import math
 import time
 from tf import transformations
+from cv_bridge import CvBridge, CvBridgeError
+import tf
+import tf2_ros
+from sensor_msgs.msg import CompressedImage, Image
 
+bridge = CvBridge()
 
 x = None
 y = None
 acabou = False
 rad_z = 0.0
 
+bridge = CvBridge()
+#cv_image = Noneframe = "camera_link"
+cv_image = "camera_link"
+
+
+tfl = 0
+tf_buffer = tf2_ros.Buffer()
+atraso = 1.5E9
+
 contador = 0
 pula = 50
+
+check_delay = False
+
 
 def recebe_odometria(data):
     global x
@@ -47,8 +62,9 @@ def recebe_odometria(data):
         print("Posicao (x,y)  ({:.2f} , {:.2f}) + angulo {:.2f}".format(x, y,angulos[2]))
     contador = contador + 1
 
-v_ang = 0.1
-v_lin = 0.1
+v_ang = 0.2
+v_lin = 0.2
+
 
 def gira360(pub):
     print("Comecando a girar")
@@ -104,11 +120,46 @@ def go_to(x1, y1, pub):
     delta_y = y1 - y0
     h = math.sqrt(delta_x**2 + delta_y**2) # Distancia ate o destino. Veja 
 
-        
+
+def roda_todo_frame(imagem):
+    # print("frame")
+    global cv_image
+    global resultados
+    global antes
+    global depois
+  
+    now = rospy.get_rostime()
+    t = rospy.Time(0)
+    imgtime = imagem.header.stamp
+    lag = now-imgtime  # calcula o lag
+    delay = lag.nsecs
+    # print("delay ", "{:.3f}".format(delay/1.0E9))
+    if delay > atraso and check_delay == True:
+        print("Descartando por causa do delay do frame:", delay)
+        return
+    try:
+        #antes = time.clock()
+        cv_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")
+        #depois = time.clock()
+        if cv_image is not None:
+            print(cv_image)
+            identidica_esfera.acha_esfera(cv_image)
+            cv2.imshow("Video", cv_image)
+            cv2.waitKey(5)
+
+    except CvBridgeError as e:
+        print('ex', e)    
+
+
 
 if __name__=="__main__":
 
+
+
     rospy.init_node("odometry", anonymous=True)
+    topico_imagem = "/camera/rgb/image_raw/compressed"
+
+    recebedor = rospy.Subscriber(topico_imagem, CompressedImage, roda_todo_frame, queue_size=4, buff_size=2**24)
 
     # Velocidades
     zero = Twist(Vector3(0,0,0), Vector3(0,0,0))
@@ -116,16 +167,18 @@ if __name__=="__main__":
     hor = Twist(Vector3(0,0,0), Vector3(0,0,0.3))
 
     linear = Twist(Vector3(v_lin,0,0), Vector3(0,0,0))
-    
 
     velocidade_saida = rospy.Publisher("/cmd_vel", Twist, queue_size = 3 )
 
     ref_odometria = rospy.Subscriber("/odom", Odometry, recebe_odometria)
-
+    
     velocidade_saida.publish(zero)
     rospy.sleep(1.0) # contorna bugs de timing    
 
+
     while not rospy.is_shutdown():
+
+        
         #SE O ROB^O ESTIVER BATENDO NAS COISAS DIMINUIR A VELOCIDADE
         rospy.sleep(0.5)    
 
