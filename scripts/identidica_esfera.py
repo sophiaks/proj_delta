@@ -66,9 +66,12 @@ def acha_esfera(frame):
             cv2.circle(frame,(i[0],i[1]),i[2],(0,0,255),2)
             # draw the center of the circle
             cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)
-
+            #draw a rectangle around the circle
+            cv2.rectangle(frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
 
     if circleR is not None:
+
+        x,y,w,h = cv2.boundingRect(cnt)
 
         lista.append("red_sphere")
 
@@ -81,6 +84,9 @@ def acha_esfera(frame):
             cv2.circle(frame,(i[0],i[1]),i[2],(0,0,255),2)
             # draw the center of the circle
             cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)
+            
+            #draw a rectangle around the circle
+            cv2.rectangle(frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
 
 
     if circleB is not None:
@@ -96,6 +102,9 @@ def acha_esfera(frame):
             cv2.circle(frame,(i[0],i[1]),i[2],(0,0,255),2)
             # draw the center of the circle
             cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)
+            
+            #draw a rectangle around the circle
+            cv2.rectangle(frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
 
     else:
         print("nenhum circulo")
