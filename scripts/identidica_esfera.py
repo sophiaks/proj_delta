@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 import time
 from cv_bridge import CvBridge, CvBridgeError
 from main import goal
-from main import lista
+from main import resultados
 
 lower = 0
 upper = 1
@@ -31,10 +31,6 @@ def acha_esfera(frame):
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    bordas = cv2.Canny(blur, 50, 150, apertureSize=3)
-    bordas_color = cv2.cvtColor(bordas, cv2.COLOR_GRAY2BGR)
-
 
     cor_menorG = np.array([50, 50, 40], dtype=np.uint8)
     cor_maiorG = np.array([60, 255, 255], dtype=np.uint8)
@@ -55,7 +51,7 @@ def acha_esfera(frame):
 
     if circleG is not None:
 
-        lista.append("green_sphere")
+        resultados.append("green_sphere")
 
         print("Achou círculo verde: {}".format(circleG))
         circleG = np.uint16(np.around(circleG))
@@ -71,9 +67,7 @@ def acha_esfera(frame):
 
     if circleR is not None:
 
-        x,y,w,h = cv2.boundingRect(cnt)
-
-        lista.append("red_sphere")
+        resultados.append("red_sphere")
 
         print("Achou círculo vermelho: {}".format(circleR))
         circleR = np.uint16(np.around(circleR))
@@ -91,7 +85,7 @@ def acha_esfera(frame):
 
     if circleB is not None:
 
-        lista.append("blue_sphere")
+        resultados.append("blue_sphere")
         print("Achou círculo azul: {}".format(circleB))
 
         circleB = np.uint16(np.around(circleB))

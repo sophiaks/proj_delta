@@ -29,12 +29,10 @@ x = None
 y = None
 acabou = False
 rad_z = 0.0
+resultados = []
 
 bridge = CvBridge()
-#cv_image = Noneframe = "camera_link"
-cv_image = "camera_link"
-
-
+cv_image = Noneframe = "camera_link"
 tfl = 0
 #tf_buffer = tf2_ros.Buffer()
 atraso = 1.5E9
@@ -43,8 +41,6 @@ contador = 0
 pula = 50
 
 check_delay = False
-
-lista = []
 
 def recebe_odometria(data):
     global x
