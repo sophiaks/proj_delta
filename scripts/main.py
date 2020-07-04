@@ -24,9 +24,7 @@ import visao_module
 import mobilenet_simples
 
 
-goal = ["blue_sphere"]
-global lista
-lista = []
+goal = ["bird","red_sphere"]
 
 bridge = CvBridge()
 
@@ -85,10 +83,13 @@ def gira360(pub):
         cv2.putText(image, label, (500, 500),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
 
-def checa_lista(pub, lista, goal, cv_image):
-    if goal == lista:
+def checa_lista(pub, goal, cv_image):
+    global acabou
+    if goal == []:
+        print("Achou tudo")
         zero = Twist(Vector3(0,0,0), Vector3(0,0,0))
         pub.publish(zero)
+        acabou = True
         cv2.putText(cv_image, 'ACHOU TODOS OS GOALS', (500, 500),  cv2.FONT_HERSHEY_SIMPLEX , 1, (255, 0, 0), 2, cv2.LINE_AA)
 
 def go_to(x1, y1, pub):
@@ -171,24 +172,24 @@ def roda_todo_frame(imagem):
             #print(cv_image)
             identidica_esfera.acha_esfera(cv_image)
 
-        if verm == True and "red_sphere" not in lista:
+        if verm == True and "red_sphere" in goal:
             print("entrou")
-            lista.append("red_sphere")
+            goal.remove("red_sphere")
 
-        if azul == True:
+        if azul == True and "blue_sphere" in goal:
             print("entrou")
-            lista.append("blue_sphere")
+            goal.remove("blue_sphere")
 
-        if verde == True:
-            lista.append("green_sphere")         
+        if verde == True and "green_sphere" in goal:
+            goal.remove("green_sphere")         
 
-        checa_lista(velocidade_saida, lista, goal, cv_image)
-        print(lista)
+        checa_lista(velocidade_saida, goal, cv_image)
         print(goal)
 
     except CvBridgeError as e:
         print('ex', e)
-    
+
+    cv2.putText(cv_image, 'ACHOU TODOS OS GOALS', (500, 500),  cv2.FONT_HERSHEY_SIMPLEX , 1, (255, 0, 0), 2, cv2.LINE_AA)
     cv2.imshow("Video", cv_image)
     cv2.waitKey(5)    
 
@@ -224,100 +225,197 @@ if __name__=="__main__":
         # qnd e 5.5 ele nao ajusta bem e bate na parede
         # com 5.4 ele ajusta o angulo pra 0.01 e melhora o resultado
         go_to(5, -5.40, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(10, -5.40, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(14, -5.50, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
+
         #   Entra na 400 e alguma coisa
         go_to(14, -2.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         
         #   Gira na 400 e alguma coisa
         gira360(velocidade_saida)
 
         go_to(16.7, -2, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         
         gira360(velocidade_saida)
 
         go_to(14, -2.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(14, -5.5, velocidade_saida)  
+        if acabou == True:
+            velocidade_saida.publish(zero)
     
         #   Vai pra metade do corredor (mais estabilidade)
 
         go_to(8.5, -5.5, velocidade_saida) 
+        if acabou == True:
+            velocidade_saida.publish(zero)
 
         #   Vai pro ponto inicial (caminho dividido em 2 pra estabilidade)
         go_to(4, -5.50, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(0, -5.50, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
 
         #   Entra no L3
         go_to(0, -3.50, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(3, -3.50, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
 
         gira360(velocidade_saida)
 
         #   Entra na 403
         go_to(0, -3.50, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(0, 0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(0, 2.50, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
 
         gira360(velocidade_saida)
 
         #   Entra na 404
         go_to(0, 1.50, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(1, 1.50, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(1, 3.50, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
 
         gira360(velocidade_saida)
 
         #   Entra no L2
         go_to(0, 0.0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-2.0, -1.0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-4.5, -1.0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-7.0, -1.0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         #   Gira no meio do L2
         gira360(velocidade_saida)
 
         #   Sai do L2 e vai pro corredor
         go_to(-9.0, -1.0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-11.0, -1.0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-13.5, -1.0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-16, -1.0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-18, 0.0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
 
         #   Entra na sala de alguma coisa termica
         go_to(-18, 3.0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         #   Gira na porta do lab
         gira360(velocidade_saida)
 
         #   Sai do lab chique, vai pro de materiais
         go_to(-18, 0.0, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-18, -4.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-20, -4.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         #   Gira na porta do lab de materiais
         gira360(velocidade_saida)
 
         #   Vai pro meio do corredor perto do L2
         go_to(-18.0, -4.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-16.0, -4.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-14.0, -4.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-12.5, -4.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-10.0, -4.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-8.5, -4.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-6.5, -4.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         #   Gira no meio do corredor
         gira360(velocidade_saida)
 
         #   Sai pela porta perto do L2
         go_to(-4.5, -5.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-2.5, -5.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(-1.0, -5.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(0.5, -5.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(0.5, -8.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
 
         #   Vai pro cantinho com as duas portas
         go_to(2.5, -8.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(4.5, -8.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(6.5, -8.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(8.0, -8.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         go_to(9.5, -8.5, velocidade_saida)
+        if acabou == True:
+            velocidade_saida.publish(zero)
         #   Gira
         gira360(velocidade_saida)
         

@@ -9,7 +9,6 @@ from matplotlib import pyplot as plt
 import time
 from cv_bridge import CvBridge, CvBridgeError
 from main import goal
-from main import lista
 
 lower = 0
 upper = 1
@@ -57,8 +56,6 @@ def acha_esfera(frame):
 
     if circleG is not None:
         verde = True
-        if "green_sphere" not in lista:
-            lista.append("green_sphere")
 
         print("Achou círculo verde: {}".format(circleG))
         circleG = np.uint16(np.around(circleG))
@@ -81,8 +78,6 @@ def acha_esfera(frame):
 
     if circleR is not None:
         verm = True
-        if "red_sphere" not in lista:
-            lista.append("red_sphere")
 
         print("Achou círculo vermelho: {}".format(circleR))
         circleR = np.uint16(np.around(circleR))
@@ -106,9 +101,6 @@ def acha_esfera(frame):
 
     if circleB is not None:
         azul = True
-
-        if "blue_sphere" not in lista:
-            lista.append("blue_sphere")
 
         print("Achou círculo azul: {}".format(circleB))
 
