@@ -95,10 +95,19 @@ def acha_esfera(frame):
             # draw the outer circle
             cv2.circle(frame,(i[0],i[1]),i[2],(0,0,255),2)
             # draw the center of the circle
-            cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)
-            
+            cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)            
             #draw a rectangle around the circle
-            cv2.rectangle(frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
+            retanguloB = (frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
+            cv2.rectangle(retanguloB)
+
+            if retanguloB is not None:
+            
+                x1, y1 = retanguloB[1]
+                x2, y2 = retanguloB[2]
+                
+                ROIB = frame[y1:y2, x1:x2]            
+                if ROIB is not None:
+                    cv2.imshow('ROI', ROIB)
 
     else:
         print("nenhum circulo")
