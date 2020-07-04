@@ -23,6 +23,7 @@ from sensor_msgs.msg import CompressedImage, Image
 import visao_module
 import mobilenet_simples
 
+
 goal = ["blue_sphere", "bicycle"]
 lista = []
 
@@ -131,7 +132,6 @@ def roda_todo_frame(imagem):
     global centro
     global temp_image
   
-  
     now = rospy.get_rostime()
     t = rospy.Time(0)
     imgtime = imagem.header.stamp
@@ -142,16 +142,15 @@ def roda_todo_frame(imagem):
         print("Descartando por causa do delay do frame:", delay)
         return
     try:
-        cv_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")
-        temp_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")
+        cv_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")  
+        temp_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")    
         centro, saida_net, resultados = visao_module.processa(temp_image)
-        identidica_esfera.acha_esfera(cv_image)
+
         for resultado in resultados:
             x1, y1 = resultado[2]
             x2, y2 = resultado[3]
             for item in goal:
                 if resultado[0] == item and resultado[0] not in lista:
-                    print ("algo")
                     ROI = cv_image[y1:y2, x1:x2]
                     print(ROI)
                     if ROI is not None:
@@ -159,11 +158,16 @@ def roda_todo_frame(imagem):
                     lista.append(resultado)
 
         cv_image = saida_net.copy()
+
+        if cv_image is not None:
+            print(cv_image)
+            identidica_esfera.acha_esfera(cv_image)
+       
     except CvBridgeError as e:
         print('ex', e)
 
     cv2.imshow("Video", cv_image)
-    cv2.waitKey(5)   
+    cv2.waitKey(5)    
 
 
 

@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 import time
 from cv_bridge import CvBridge, CvBridgeError
 from main import goal
-from main import resultados
+from main import lista
 
 lower = 0
 upper = 1
@@ -47,11 +47,11 @@ def acha_esfera(frame):
 
     circleG = cv2.HoughCircles(mask_green, cv2.HOUGH_GRADIENT,2,40,param1=75,param2=50,minRadius=1,maxRadius=100)
     circleB = cv2.HoughCircles(mask_blue, cv2.HOUGH_GRADIENT,2,40,param1=75,param2=50,minRadius=1,maxRadius=150)
-    circleR = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT,2,40,param1=100,param2=70,minRadius=1,maxRadius=150)
+    circleR = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT,2,40,param1=75,param2=50,minRadius=1,maxRadius=150)
 
     if circleG is not None:
 
-        resultados.append("green_sphere")
+        lista.append("green_sphere")
 
         print("Achou círculo verde: {}".format(circleG))
         circleG = np.uint16(np.around(circleG))
@@ -65,9 +65,16 @@ def acha_esfera(frame):
             #draw a rectangle around the circle
             cv2.rectangle(frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
 
+            x1G, y1G = (i[0] - 2*(i[2]), i[1] - 2*(i[2])) 
+            x2G, y2G = (i[0] + 2*(i[2]), i[1] + 2*(i[2]))
+            
+            ROIG = frame[y1G:y2G, x1G:x2G]            
+            if ROIG is not None:
+                cv2.imshow('ROI', ROIG)
+
     if circleR is not None:
 
-        resultados.append("red_sphere")
+        lista.append("red_sphere")
 
         print("Achou círculo vermelho: {}".format(circleR))
         circleR = np.uint16(np.around(circleR))
@@ -77,15 +84,21 @@ def acha_esfera(frame):
             # draw the outer circle
             cv2.circle(frame,(i[0],i[1]),i[2],(0,0,255),2)
             # draw the center of the circle
-            cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)
-            
+            cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)            
             #draw a rectangle around the circle
             cv2.rectangle(frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
+                       
+            x1, y1 = (i[0] - 2*(i[2]), i[1] - 2*(i[2])) 
+            x2, y2 = (i[0] + 2*(i[2]), i[1] + 2*(i[2]))
+            
+            ROIR = frame[y1:y2, x1:x2]            
+            if ROIR is not None:
+                cv2.imshow('ROI', ROIR)            
 
 
     if circleB is not None:
 
-        resultados.append("blue_sphere")
+        lista.append("blue_sphere")
         print("Achou círculo azul: {}".format(circleB))
 
         circleB = np.uint16(np.around(circleB))
@@ -97,17 +110,15 @@ def acha_esfera(frame):
             # draw the center of the circle
             cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)            
             #draw a rectangle around the circle
-            retanguloB = (frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
-            cv2.rectangle(retanguloB)
-
-            if retanguloB is not None:
+            cv2.rectangle(frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
+                                   
+            x1B, y1B = (i[0] - 2*(i[2]), i[1] - 2*(i[2])) 
+            x2B, y2B = (i[0] + 2*(i[2]), i[1] + 2*(i[2]))
             
-                x1, y1 = retanguloB[1]
-                x2, y2 = retanguloB[2]
-                
-                ROIB = frame[y1:y2, x1:x2]            
-                if ROIB is not None:
-                    cv2.imshow('ROI', ROIB)
+            ROIB = frame[y1B:y2B, x1B:x2B]            
+            if ROIB is not None:
+                cv2.imshow('ROI', ROIB)
+
 
     else:
         print("nenhum circulo")
