@@ -20,6 +20,8 @@ from cv_bridge import CvBridge, CvBridgeError
 import tf
 import tf2_ros
 from sensor_msgs.msg import CompressedImage, Image
+import mobilenet_simples
+import visao_module
 
 
 x = None
@@ -29,13 +31,20 @@ rad_z = 0.0
 resultados = []
 
 bridge = CvBridge()
-cv_image = Noneframe = "camera_link"
+cv_image = None
+temp_image = None
+mask = None
+frame = "camera_link"
 tfl = 0
 tf_buffer = tf2_ros.Buffer()
 atraso = 1.5E9
+check_delay = False
 
 contador = 0
 pula = 50
+
+goal = ['bicycle'] 
+lista = []
 
 def recebe_odometria(data):
     global x
@@ -67,11 +76,14 @@ def gira360(pub):
     rospy.sleep(delta_t)
     print("parou de girar")
 
-    #   CHECAR SE TODOS OS ITENS DA LISTA FORAM ENCONTRADOS
+    while acabou == True:
+        zero = Twist(Vector3(0,0,0), Vector3(0,0,0))
+        pub.publish(zero)
+        idx = int(detections[0, 0, i, 1])
+        cv2.putText(image, label, (500, 500),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+    
 
-    #   SE SIM, ACABOU == TRUE
-
-    #   fAZER IF AQUI PRA PARAR SE ACABOU == TRUE
 
 def go_to(x1, y1, pub):
     x0 = x # Vai ser atualizado via global e odometria em um thread paralelo
@@ -117,6 +129,9 @@ def roda_todo_frame(imagem):
     # print("frame")
     global cv_image
     global resultados
+    global centro
+    global temp_image
+  
   
     now = rospy.get_rostime()
     t = rospy.Time(0)
@@ -128,13 +143,28 @@ def roda_todo_frame(imagem):
         print("Descartando por causa do delay do frame:", delay)
         return
     try:
-        antes = time.clock()
         cv_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")
-        depois = time.clock()
+        temp_image = bridge.compressed_imgmsg_to_cv2(imagem, "bgr8")
+        centro, saida_net, resultados = visao_module.processa(temp_image)
+        for resultado in resultados:
+            x1, y1 = resultado[2]
+            x2, y2 = resultado[3]
+            for item in goal:
+                if resultado[0] == item and resultado[0] not in lista:
+                    ROI = cv_image[y1:y2, x1:x2]
+                    print(ROI)
+                    if ROI is not None:
+                        cv2.imshow('ROI', ROI)
+                    lista.append(resultado)
+                    if lista == goal:
+                        acabou == True
 
+        cv_image = saida_net.copy()
     except CvBridgeError as e:
         print('ex', e)
-        
+
+    cv2.imshow("Video", cv_image)
+    cv2.waitKey(5)   
 
 if __name__=="__main__":
 
@@ -159,10 +189,7 @@ if __name__=="__main__":
     velocidade_saida.publish(zero)
     rospy.sleep(1.0) # contorna bugs de timing    
 
-    if cv_image is not None:
-            print(cv_image)
-            cv2.imshow("Video", cv_image)
-            cv2.waitKey(0)
+    
 
     while not rospy.is_shutdown():
         #SE O ROB^O ESTIVER BATENDO NAS COISAS DIMINUIR A VELOCIDADE
@@ -183,7 +210,7 @@ if __name__=="__main__":
         
         gira360(velocidade_saida)
 
-        go_to(14, -3, velocidade_saida)
+        go_to(14, -2.5, velocidade_saida)
         go_to(14, -5.5, velocidade_saida)  
     
         #   Vai pra metade do corredor (mais estabilidade)
@@ -272,7 +299,5 @@ if __name__=="__main__":
 
         while acabou == True:
             velocidade_saida.publish(zero)
-
-        
 
         rospy.sleep(1.0)
