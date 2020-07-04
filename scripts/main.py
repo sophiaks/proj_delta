@@ -162,7 +162,7 @@ def roda_todo_frame(imagem):
         if cv_image is not None:
             print(cv_image)
             identidica_esfera.acha_esfera(cv_image)
-       
+
     except CvBridgeError as e:
         print('ex', e)
 
@@ -214,7 +214,7 @@ if __name__=="__main__":
         
         gira360(velocidade_saida)
 
-        go_to(14, -3, velocidade_saida)
+        go_to(14, -2.5, velocidade_saida)
         go_to(14, -5.5, velocidade_saida)  
     
         #   Vai pra metade do corredor (mais estabilidade)

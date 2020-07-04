@@ -47,7 +47,7 @@ def acha_esfera(frame):
 
     circleG = cv2.HoughCircles(mask_green, cv2.HOUGH_GRADIENT,2,40,param1=75,param2=50,minRadius=1,maxRadius=100)
     circleB = cv2.HoughCircles(mask_blue, cv2.HOUGH_GRADIENT,2,40,param1=75,param2=50,minRadius=1,maxRadius=150)
-    circleR = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT,2,40,param1=75,param2=50,minRadius=1,maxRadius=150)
+    circleR = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT,2,40,param1=95,param2=75,minRadius=1,maxRadius=150)
 
     if circleG is not None:
 
@@ -73,8 +73,8 @@ def acha_esfera(frame):
                 cv2.imshow('ROI', ROIG)
 
     if circleR is not None:
-
-        lista.append("red_sphere")
+        if "red sphere" not in lista:
+            lista.append("red_sphere")
 
         print("Achou círculo vermelho: {}".format(circleR))
         circleR = np.uint16(np.around(circleR))
