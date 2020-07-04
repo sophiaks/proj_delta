@@ -14,6 +14,10 @@ from main import lista
 lower = 0
 upper = 1
 
+verde = None
+verm = None
+azul = None
+
 # cor_menor = None
 # cor_maior = None
 mask_green = None
@@ -25,9 +29,11 @@ def acha_esfera(frame):
     global mask_green
     global mask_red
     global mask_blue
+    global verde
+    global verm 
+    global azul
 
    # if frame is not None:
-    print("entrou")
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
@@ -35,8 +41,8 @@ def acha_esfera(frame):
     cor_menorG = np.array([50, 50, 40], dtype=np.uint8)
     cor_maiorG = np.array([60, 255, 255], dtype=np.uint8)
 
-    cor_menorB = np.array([100,  40,  40], dtype=np.uint8)
-    cor_maiorB = np.array([130, 255, 255], dtype=np.uint8)
+    cor_menorB = np.array([110,  50,  50], dtype=np.uint8)
+    cor_maiorB = np.array([120, 245, 245], dtype=np.uint8)
 
     cor_menorR = np.array([0, 110, 110], dtype=np.uint8)
     cor_maiorR = np.array([10, 240, 240], dtype=np.uint8)
@@ -50,8 +56,9 @@ def acha_esfera(frame):
     circleR = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT,2,40,param1=95,param2=75,minRadius=1,maxRadius=150)
 
     if circleG is not None:
-
-        lista.append("green_sphere")
+        verde = True
+        if "green_sphere" not in lista:
+            lista.append("green_sphere")
 
         print("Achou círculo verde: {}".format(circleG))
         circleG = np.uint16(np.around(circleG))
@@ -73,7 +80,8 @@ def acha_esfera(frame):
                 cv2.imshow('ROI', ROIG)
 
     if circleR is not None:
-        if "red sphere" not in lista:
+        verm = True
+        if "red_sphere" not in lista:
             lista.append("red_sphere")
 
         print("Achou círculo vermelho: {}".format(circleR))
@@ -97,8 +105,11 @@ def acha_esfera(frame):
 
 
     if circleB is not None:
+        azul = True
 
-        lista.append("blue_sphere")
+        if "blue_sphere" not in lista:
+            lista.append("blue_sphere")
+
         print("Achou círculo azul: {}".format(circleB))
 
         circleB = np.uint16(np.around(circleB))
@@ -116,12 +127,14 @@ def acha_esfera(frame):
             x2B, y2B = (i[0] + 2*(i[2]), i[1] + 2*(i[2]))
             
             ROIB = frame[y1B:y2B, x1B:x2B]            
-            if ROIB is not None:
+            if ROIB is not None and ROIB.shape != (0,0):
                 cv2.imshow('ROI', ROIB)
 
 
     else:
         print("nenhum circulo")
+
+    return verde, verm, azul
 
     # cv2.imshow("Video", mask)
     # cv2.waitKey(5)

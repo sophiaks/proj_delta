@@ -24,7 +24,8 @@ import visao_module
 import mobilenet_simples
 
 
-goal = ["blue_sphere", "bicycle"]
+goal = ["blue_sphere"]
+global lista
 lista = []
 
 bridge = CvBridge()
@@ -83,6 +84,12 @@ def gira360(pub):
         idx = int(detections[0, 0, i, 1])
         cv2.putText(image, label, (500, 500),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, COLORS[idx], 2)
+
+def checa_lista(pub, lista, goal, cv_image):
+    if goal == lista:
+        zero = Twist(Vector3(0,0,0), Vector3(0,0,0))
+        pub.publish(zero)
+        cv2.putText(cv_image, 'ACHOU TODOS OS GOALS', (500, 500),  cv2.FONT_HERSHEY_SIMPLEX , 1, (255, 0, 0), 2, cv2.LINE_AA)
 
 def go_to(x1, y1, pub):
     x0 = x # Vai ser atualizado via global e odometria em um thread paralelo
@@ -158,17 +165,32 @@ def roda_todo_frame(imagem):
                     lista.append(resultado)
 
         cv_image = saida_net.copy()
+        verde, verm, azul = identidica_esfera.acha_esfera(cv_image)
 
         if cv_image is not None:
-            print(cv_image)
+            #print(cv_image)
             identidica_esfera.acha_esfera(cv_image)
+
+        if verm == True and "red_sphere" not in lista:
+            print("entrou")
+            lista.append("red_sphere")
+
+        if azul == True:
+            print("entrou")
+            lista.append("blue_sphere")
+
+        if verde == True:
+            lista.append("green_sphere")         
+
+        checa_lista(velocidade_saida, lista, goal, cv_image)
+        print(lista)
+        print(goal)
 
     except CvBridgeError as e:
         print('ex', e)
-
+    
     cv2.imshow("Video", cv_image)
     cv2.waitKey(5)    
-
 
 
 if __name__=="__main__":
