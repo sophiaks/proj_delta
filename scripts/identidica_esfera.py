@@ -40,10 +40,10 @@ def acha_esfera(frame):
     cor_menorG = np.array([50, 170, 60], dtype=np.uint8)
     cor_maiorG = np.array([60, 255, 255], dtype=np.uint8)
 
-    cor_menorB = np.array([110,  150,  10], dtype=np.uint8)
+    cor_menorB = np.array([110,  165,  10], dtype=np.uint8)
     cor_maiorB = np.array([120, 255, 255], dtype=np.uint8)
 
-    cor_menorR = np.array([0, 180, 70], dtype=np.uint8)
+    cor_menorR = np.array([0, 170, 70], dtype=np.uint8)
     cor_maiorR = np.array([10, 255, 255], dtype=np.uint8)
 
     mask_green = cv2.inRange(hsv, cor_menorG,cor_maiorG)
@@ -51,13 +51,14 @@ def acha_esfera(frame):
     mask_blue = cv2.inRange(hsv, cor_menorB,cor_maiorB)
 
     circleG = cv2.HoughCircles(mask_green, cv2.HOUGH_GRADIENT,2,40,param1=75,param2=50,minRadius=1,maxRadius=100)
-    circleB = cv2.HoughCircles(mask_blue, cv2.HOUGH_GRADIENT,2,40,param1=85,param2=60,minRadius=1,maxRadius=150)
-    circleR = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT,2,40,param1=90,param2=75,minRadius=1,maxRadius=150)
+    circleB = cv2.HoughCircles(mask_blue, cv2.HOUGH_GRADIENT,2,40,param1=100,param2=90,minRadius=1,maxRadius=150)
+    circleR = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT,2,40,param1=110,param2=95,minRadius=1,maxRadius=150)
 
     if circleG is not None:
         verde = True
 
         print("Achou círculo verde: {}".format(circleG))
+        
         circleG = np.uint16(np.around(circleG))
 
         for i in circleG[0,:]:
@@ -72,14 +73,15 @@ def acha_esfera(frame):
             x1G, y1G = (i[0] - 2*(i[2]), i[1] - 2*(i[2])) 
             x2G, y2G = (i[0] + 2*(i[2]), i[1] + 2*(i[2]))
             
-            ROIG = frame[y1G:y2G, x1G:x2G]            
+            ROIG = frame[y1G:y2G, x1G:x2G]      
+            cv2.putText(frame, 'achou esfera verde', (50, 50),  cv2.FONT_HERSHEY_SIMPLEX , 1, (188, 0, 149), 2, cv2.LINE_AA)      
             if ROIG is not None:
                 cv2.imshow('ROI', ROIG)
 
     if circleR is not None:
         verm = True
 
-        print("Achou círculo vermelho: {}".format(circleR))
+        print("Achou círculo vermelho: {}".format(circleR))        
         circleR = np.uint16(np.around(circleR))
 
         for i in circleR[0,:]:
@@ -90,20 +92,21 @@ def acha_esfera(frame):
             #cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)            
             #draw a rectangle around the circle
             cv2.rectangle(frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
-                       
+                                  
             x1, y1 = (i[0] - 2*(i[2]), i[1] - 2*(i[2])) 
             x2, y2 = (i[0] + 2*(i[2]), i[1] + 2*(i[2]))
             
-            ROIR = frame[y1:y2, x1:x2]            
+            ROIR = frame[y1:y2, x1:x2]   
+            cv2.putText(frame, 'achou esfera vermelha', (50, 50),  cv2.FONT_HERSHEY_SIMPLEX , 1, (188, 0, 149), 2, cv2.LINE_AA) 
+                    
             if ROIR is not None:
                 cv2.imshow('ROI', ROIR)            
 
 
     if circleB is not None:
         azul = True
-
         print("Achou círculo azul: {}".format(circleB))
-
+        
         circleB = np.uint16(np.around(circleB))
 
         for i in circleB[0,:]:
@@ -119,6 +122,8 @@ def acha_esfera(frame):
             x2B, y2B = (i[0] + 2*(i[2]), i[1] + 2*(i[2]))
             
             ROIB = frame[y1B:y2B, x1B:x2B]            
+            cv2.putText(frame, 'achou esfera azul', (50, 50),  cv2.FONT_HERSHEY_SIMPLEX , 1, (188, 0, 149), 2, cv2.LINE_AA)
+
             if ROIB is not None and ROIB.shape != (0,0):
                 cv2.imshow('ROI', ROIB)
 
