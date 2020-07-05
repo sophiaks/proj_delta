@@ -51,7 +51,7 @@ def acha_esfera(frame):
     mask_blue = cv2.inRange(hsv, cor_menorB,cor_maiorB)
 
     circleG = cv2.HoughCircles(mask_green, cv2.HOUGH_GRADIENT,2,40,param1=75,param2=50,minRadius=1,maxRadius=100)
-    circleB = cv2.HoughCircles(mask_blue, cv2.HOUGH_GRADIENT,2,40,param1=100,param2=90,minRadius=1,maxRadius=150)
+    circleB = cv2.HoughCircles(mask_blue, cv2.HOUGH_GRADIENT,2,40,param1=75,param2=80,minRadius=1,maxRadius=150)
     circleR = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT,2,40,param1=110,param2=95,minRadius=1,maxRadius=150)
 
     if circleG is not None:

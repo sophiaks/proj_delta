@@ -24,7 +24,7 @@ import visao_module
 import mobilenet_simples
 
 
-goal = ["bird","red_sphere"]
+goal = ["bicycle","blue_sphere"]
 
 bridge = CvBridge()
 
@@ -284,7 +284,7 @@ if __name__=="__main__":
         go_to(-13.5, -0.6, velocidade_saida)
         if acabou == True:
             velocidade_saida.publish(zero)
-        go_to(-16, -0.7, velocidade_saida)
+        go_to(-16, -1.3, velocidade_saida)
         if acabou == True:
             velocidade_saida.publish(zero)
         go_to(-17, -0.0, velocidade_saida)
@@ -369,6 +369,9 @@ if __name__=="__main__":
         go_to(0.0, -3.3, velocidade_saida)
         if acabou == True:
             velocidade_saida.publish(zero)
+
+
+
         go_to(0.0, -5.5, velocidade_saida)
         if acabou == True:
             velocidade_saida.publish(zero)
