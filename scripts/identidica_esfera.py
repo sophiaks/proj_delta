@@ -43,16 +43,16 @@ def acha_esfera(frame):
     cor_menorB = np.array([110,  50,  50], dtype=np.uint8)
     cor_maiorB = np.array([120, 245, 245], dtype=np.uint8)
 
-    cor_menorR = np.array([0, 110, 110], dtype=np.uint8)
-    cor_maiorR = np.array([10, 240, 240], dtype=np.uint8)
+    cor_menorR = np.array([0, 120, 120], dtype=np.uint8)
+    cor_maiorR = np.array([10, 255, 255], dtype=np.uint8)
 
     mask_green = cv2.inRange(hsv, cor_menorG,cor_maiorG)
     mask_red = cv2.inRange(hsv, cor_menorR,cor_maiorR)
     mask_blue = cv2.inRange(hsv, cor_menorB,cor_maiorB)
 
     circleG = cv2.HoughCircles(mask_green, cv2.HOUGH_GRADIENT,2,40,param1=75,param2=50,minRadius=1,maxRadius=100)
-    circleB = cv2.HoughCircles(mask_blue, cv2.HOUGH_GRADIENT,2,40,param1=75,param2=50,minRadius=1,maxRadius=150)
-    circleR = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT,2,40,param1=95,param2=75,minRadius=1,maxRadius=150)
+    circleB = cv2.HoughCircles(mask_blue, cv2.HOUGH_GRADIENT,2,40,param1=85,param2=60,minRadius=1,maxRadius=150)
+    circleR = cv2.HoughCircles(mask_red, cv2.HOUGH_GRADIENT,2,40,param1=90,param2=75,minRadius=1,maxRadius=150)
 
     if circleG is not None:
         verde = True
@@ -141,7 +141,3 @@ def auto_canny(image, sigma=0.33):
     edged = cv2.Canny(image, lower, upper)
 
     return edged
-
-
-
-
