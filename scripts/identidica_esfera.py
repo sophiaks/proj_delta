@@ -37,13 +37,13 @@ def acha_esfera(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
 
-    cor_menorG = np.array([50, 50, 40], dtype=np.uint8)
+    cor_menorG = np.array([50, 170, 60], dtype=np.uint8)
     cor_maiorG = np.array([60, 255, 255], dtype=np.uint8)
 
-    cor_menorB = np.array([110,  50,  50], dtype=np.uint8)
-    cor_maiorB = np.array([120, 245, 245], dtype=np.uint8)
+    cor_menorB = np.array([110,  150,  10], dtype=np.uint8)
+    cor_maiorB = np.array([120, 255, 255], dtype=np.uint8)
 
-    cor_menorR = np.array([0, 120, 120], dtype=np.uint8)
+    cor_menorR = np.array([0, 180, 70], dtype=np.uint8)
     cor_maiorR = np.array([10, 255, 255], dtype=np.uint8)
 
     mask_green = cv2.inRange(hsv, cor_menorG,cor_maiorG)
@@ -63,9 +63,9 @@ def acha_esfera(frame):
         for i in circleG[0,:]:
 
             # draw the outer circle
-            cv2.circle(frame,(i[0],i[1]),i[2],(0,0,255),2)
+            cv2.circle(frame,(i[0],i[1]),i[2],(199,10,205),2)
             # draw the center of the circle
-            cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)
+            #cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)
             #draw a rectangle around the circle
             cv2.rectangle(frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
 
@@ -85,9 +85,9 @@ def acha_esfera(frame):
         for i in circleR[0,:]:
 
             # draw the outer circle
-            cv2.circle(frame,(i[0],i[1]),i[2],(0,0,255),2)
+            cv2.circle(frame,(i[0],i[1]),i[2],(0,170,199),2)
             # draw the center of the circle
-            cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)            
+            #cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)            
             #draw a rectangle around the circle
             cv2.rectangle(frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
                        
@@ -109,9 +109,9 @@ def acha_esfera(frame):
         for i in circleB[0,:]:
 
             # draw the outer circle
-            cv2.circle(frame,(i[0],i[1]),i[2],(0,0,255),2)
+            cv2.circle(frame,(i[0],i[1]),i[2],(0,100,200),2)
             # draw the center of the circle
-            cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)            
+            #cv2.circle(frame,(i[0],i[1]),2,(255,0,0),3)            
             #draw a rectangle around the circle
             cv2.rectangle(frame, (i[0] - 2*(i[2]), i[1] - 2*(i[2])), (i[0] + 2*(i[2]), i[1] + 2*(i[2])), (0, 128, 255), 1)
                                    
